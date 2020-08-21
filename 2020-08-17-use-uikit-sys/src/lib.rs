@@ -28,6 +28,7 @@ pub extern fn run_app() {
         match event {
             Event::NewEvents(StartCause::Init) => {
                 add_label("THIS IS SOME TEXT".to_string(), root_view);
+                add_text_view(root_view);
                 println!("The app has started!");
             },
             Event::WindowEvent {
@@ -88,4 +89,34 @@ fn add_label(label_text: String, root_view: UIView) {
 
         root_view.addSubview_(UIView(label.0));
     }
+}
+fn add_text_view(root_view: UIView) {
+    use uikit_sys::{
+        CGRect,
+        CGPoint,
+        CGSize,
+        UITextView,
+        IUITextView,
+        UIView_UIViewHierarchy,
+        UIView_UIViewGeometry,
+        INSObject,
+    };
+    let _textview = unsafe {
+        let ui_textview = {
+            let view = UITextView(UITextView::alloc().init());
+            view.setFrame_(CGRect {
+                origin: CGPoint {
+                    x: 20.0,
+                    y: 50.0,
+                },
+                size: CGSize {
+                    width: 200.0,
+                    height: 40.0,
+                },
+            });
+            root_view.addSubview_(UIView(view.0));
+            view
+        };
+        ui_textview
+    };
 }
