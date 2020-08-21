@@ -58,16 +58,18 @@ fn add_label(label_text: String, root_view: UIView) {
         ffi::CString,
         convert::TryInto,
     };
+
+    let text = CString::new(label_text.as_str()).expect("CString::new failed");
+    let text_ptr = text.as_ptr();
+    let text_length = label_text.len().try_into().unwrap();
     unsafe {
         let label = UILabel::alloc();
         label.init();
 
         let text = NSString(
             NSString::alloc().initWithBytes_length_encoding_(
-                CString::new(label_text.as_str())
-                .expect("CString::new failed")
-                .as_ptr() as *mut std::ffi::c_void,
-                label_text.len().try_into().unwrap(),
+                text_ptr as *mut std::ffi::c_void,
+                text_length,
                 NSUTF8StringEncoding,
             ),
         );
